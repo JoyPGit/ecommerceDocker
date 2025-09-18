@@ -50,6 +50,7 @@ a clean architecture pattern with domain, service, controller and infrastructure
 > Top level folders and important files
 
 | Folder / File                | Purpose                                              |
+|------------------------------|------------------------------------------------------|
 |`/mocks`                      | Postman collections and environments for API testing |
 |`/templates`                  | Kubernetes deployment templates                      |
 |`src/test`                    | Unit and architectural tests                         |
@@ -63,3 +64,70 @@ a clean architecture pattern with domain, service, controller and infrastructure
 ---
 # Getting started
 ### Prerequisites
+- Java 17
+- Maven
+- Docker
+- Redis
+- Postgres
+
+### Development workflow
+- Branch naming convention
+- PR process
+- Code review guidelines
+- Testing requirements
+
+#### Branch naming conventions
+The branch name should start with `/feature` and appended with the jira ticket number, 
+e.g. `feature/MWS-63` <br>
+Further description might be added for newer bracnhes, `feature/MWS-63-swagger-doc`
+
+#### PR process
+Raise the PR against main, resolve any conflicts and specify reviewer and set the branch 
+to be deleted once merged.
+
+## Site reliability (Monitoring & Observability)
+
+### Health checks
+- Health check endpoints
+- Liveness/readiness probes
+- Health check response format
+
+### Metrics
+- Key performance indicators
+- Custom metrics
+- Metrics collection method
+
+### Logging
+- Log levels and usage
+- Log format
+- Log aggregation
+- Retention policy
+
+### Operational Standards
+> Read more &#x1F4CE; [SLAs, SLOs & SLIs](https://sre.google/sre-book/service-level-objectives/)
+
+#### Service level agreement
+| Type   | Target            |
+|--------|-------------------|
+| Uptime | `99.9%`           |
+| RTO    | `Critical : 24 h` |
+
+#### Service Level Indicators
+- Latency
+- Errors
+- Throughput
+
+
+## CI/CD
+
+
+## FAQs
+
+**Q : How to request features?**
+A : `Explain`
+
+**Q : Where to escalate urgent issues?**
+A : `Explain`
+
+
+> **Note** : This is a live document, update it as the modle evolves.
