@@ -1,1 +1,13 @@
-1 mvn not found
+1 mvn not found -> ./mvnw works, why?
+2 start with Docker, no postgres installed locally
+add docker file
+and then docker compose
+3 swagger
+5 K8s
+6 redis
+7 kafka
+8 spotless and its hook
+9 logging
+10 lombok
+11 jasypt
+12 flyway
