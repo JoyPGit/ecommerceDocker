@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.sp</groupId>
 	<artifactId>ecommerce</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>ecommerce</name>
 	<description>E-commerce project for Spring Boot</description>
 	<url/>
@@ -51,6 +51,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
