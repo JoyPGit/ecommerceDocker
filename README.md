@@ -22,7 +22,7 @@ Detailed description : [confluence_doc]
 
 
 # Architecture
-## C$ Component (Level 3) Diagram
+## C4 Component (Level 3) Diagram
 
 ---
 
@@ -69,6 +69,12 @@ a clean architecture pattern with domain, service, controller and infrastructure
 - Docker
 - Redis
 - Postgres
+
+### Local setup
+
+git clone <https://github.com/JoyPGit/ecommerceDocker.git> 
+./mvnw clean install
+./mvnw spring-boot:run
 
 ### Development workflow
 - Branch naming convention
@@ -130,4 +136,6 @@ A : `Explain`
 A : `Explain`
 
 
-> **Note** : This is a live document, update it as the modle evolves.
+**`Note`**
+1. This is a live document, update it as the module evolves.
+1. Preview readme in VSCode (tab -> rt clk -> Open Preview) before commit
