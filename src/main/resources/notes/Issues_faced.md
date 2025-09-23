@@ -1,6 +1,8 @@
 1. spring boot version can be checked via starter-parent version in pom.xml <br>
 2. mvn not found -> ./mvnw works, why?
 maven wrapper exists in project, maven might not be locally installed
+Spring Initializr automatically includes a Maven Wrapper when generating a Maven-based Spring Boot project.
+
 
 1.1 maven build fails -> comment out @SpringBootTest
 1.2 mvn clean package vs build?
@@ -49,7 +51,16 @@ echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc <br>
 source ~/.zshrc <br>
 brew install docker-compose
 
-`2.4` connect the docker containers to local app
+`2.4` To connect local spring boot app to docker postgres?
+<br>
+Use same creds as in dbeaver <br>
+**Remove the maven dependency, refresh pom, run app
+add dependency, reload
+
+_Also remove the driver-class-name, it's not reqd_
+**
+<br>
+<https://stackoverflow.com/a/78149005/5667980>
 <br>
 `Q` : does postgres by default connect with this? <br>
 ```
@@ -87,20 +98,6 @@ This will bring up the docker server on port 4322, whose url will be 4500.
 
 <br>
 
-`2.6` `How to connect local app to docker containers?`
-check application.properties
-
-<br>
-
-`2.7` `Failed to initialize dependency 'dataSourceScriptDatabaseInitializer' of 
-LoadTimeWeaverAware bean 'entityManagerFactory': 
-Error creating bean with name 'dataSourceScriptDatabaseInitializer' 
-defined in class path resource`
-
-`A` : 
-1. Have you added flyway scripts schema?
-2. Add flyway entries in application.properties (don't forget schema)
-3. Check redis key; *spring.data.redis.host* vs *spring.redis.host*
 
 `2.8` Check via terminal and UI (for db) if entries are being made
 
@@ -137,11 +134,8 @@ Factory method 'dataSource' threw exception with message: Cannot load driver cla
 `3.5` If you already added the dependency but still get this error in Docker, 
 issue might be that app is already runing via `app:` key specified in docker-compose
 
-Error creating bean with name 'dataSourceScriptDatabaseInitializer'
-flyway and 
-it might mean your 
-Dockerfile is only copying target/app.jar but you didn’t build a fat JAR (with dependencies).
-check and comment out app in docker-compose, it might be building local spring boot app image
+
+
 <br>
 mvn clean package spring-boot:repackage
 vs mvn clean install
@@ -166,3 +160,38 @@ vs <goals>check?
 12. flyway <br>
 13. profiles (local Dockerfile) <br>
 14. transactions <br>
+
+
+started with docker-compose up --build
+Your app service uses build:
+This tells Docker Compose to build a custom image for the springboot-app from your local project using your Dockerfile.
+container name for app in docker-compose doesn't matter 
+
+have connected to postgres via dbeaver
+health endpoint working
+working spring boot app in docker container, will try connecting local
+app to docker containers for db, kafka, redis etc NEXT
+
+app or any name in docker-compose doesn't matter, it's just a placeholder
+
+docker-compose up --build uses the old image as build only builds 
+containers from images
+
+
+
+
+_LOGS_
+Once the server starts, check logs in Docker UI
+
+15. FLYWAY
+type baseline, version 1, checksum null
+
+flyway in docker compose not picking up schema
+check path in volumes : - ./src/main/resources/db/migration:/flyway/sql
+
+FAT JAR
+it might mean your 
+Dockerfile is only copying target/app.jar but you didn’t build a fat JAR (with dependencies).
+check and comment out app in docker-compose, it might be building local spring boot app image
+
+works locally too by commenting out the app/service in docker-compose

@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS commerce.users;
 Create table commerce.users (
     id SERIAL PRIMARY KEY,
     full_name VARCHAR(256) NOT NULL,

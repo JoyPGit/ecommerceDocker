@@ -21,7 +21,7 @@ services:
       - postgres
     command: -url=jdbc:postgresql://postgres:5432/mydb -user=myuser -password=mypassword -locations=filesystem:/flyway/sql migrate
     volumes:
-      - ./db/migrations:/flyway/sql
+      - ./src/main/resources/db/migration:/flyway/sql
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
@@ -55,23 +55,23 @@ services:
     ports:
       - "6379:6379"
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: springboot-app
-    depends_on:
-      - postgres
-      - kafka
-      - redis
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydb
-      SPRING_DATASOURCE_USERNAME: myuser
-      SPRING_DATASOURCE_PASSWORD: mypassword
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_REDIS_HOST: redis
-    ports:
-      - "8080:8080"
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: springboot-app
+#    depends_on:
+#      - postgres
+#      - kafka
+#      - redis
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydb
+#      SPRING_DATASOURCE_USERNAME: myuser
+#      SPRING_DATASOURCE_PASSWORD: mypassword
+#      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+#      SPRING_REDIS_HOST: redis
+#    ports:
+#      - "8080:8080"
 
 volumes:
   postgres_data:
