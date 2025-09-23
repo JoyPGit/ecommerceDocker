@@ -35,6 +35,16 @@ Dockerfile
 | ENTRYPOINT                         | defines a command that will always run when a container starts from the image                                                                      |
 
 
+## First time
+add Dockerfile
+./mvnw clean package
+docker build -t local-spring:1.0 . (can see the image built -> docker images)
+docker run --rm local-spring:1.0 (--rm removes container when it exits)
+
+**Do you want this Dockerfile just to run a prebuilt JAR, or do you want it
+to also build the JAR inside Docker (multi-stage build)?**
+so docker-compose might build the project automatically
+
 ## Restarting after changes
 
 Stop all the containers -> Ctrl+c in terminal where docker-compose is running
@@ -42,10 +52,21 @@ Build the jar
 Remove the images of local spring app and of docker-compose
 docker-compose up --build
 
-## First time
-add Dockerfile
-./mvnw clean package
-docker build -t local-spring:1.0 . (can see the image built -> docker images)
-docker run --rm local-spring:1.0 (--rm removes container when it exits)
-
 needs database
+Each app like postgres, redis, kafka has its own image and hence its own container
+To manage these apps after running, an orchestrator is needed.
+With a single command like `docker-compose up`, all defined services can be built,  
+started and linked.
+
+`-- build`
+The --build flag instructs docker-compose to rebuild the images for any service that
+has a build instruction in the docker-compose.yml file
+
+project/
+│── docker-compose.yml
+│── Dockerfile
+│── target/app.jar
+│── db/
+└── migrations/
+├── V1__init.sql
+├── V2__add_table.sql

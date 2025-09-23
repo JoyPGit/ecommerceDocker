@@ -1,4 +1,5 @@
-1. mvn not found -> ./mvnw works, why?
+1. spring boot version can be checked via starter-parent version in pom.xml <br>
+2. mvn not found -> ./mvnw works, why?
 maven wrapper exists in project, maven might not be locally installed
 
 1.1 maven build fails -> comment out @SpringBootTest
@@ -13,13 +14,13 @@ maven wrapper exists in project, maven might not be locally installed
 mvn package
  
 2. start with Docker, no postgres installed locally
-add docker file
-and then docker compose
+
+`2.1` add docker file
 
 **Do you want this Dockerfile just to run a prebuilt JAR, or do you want it
 to also build the JAR inside Docker (multi-stage build)?**
 
-2.1 how to get jar without version in name?
+`2.2` how to get jar without version in name?
 In your pom.xml, add this under <build>:
 
 <build>
@@ -27,17 +28,141 @@ In your pom.xml, add this under <build>:
 </build>
 This is required for specifying jar in Dockerfile
 
-2.2 Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured.
-Need docker-compose file to 
+<br>
 
-4. swagger
-5. K8s
-6. redis
-7. kafka
-8. spotless and its hook
-9. logging
-10. lombok
-11. jasypt
-12. flyway
-13. profiles (local Dockerfile)
-14. transactions
+`2.3` Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured.
+Need docker-compose file to add postgres, kafka, redis
+
+Need docker compose
+generated a docker compose without entry for spring boot app
+
+`docker-compose up --build          
+zsh: command not found: docker-compose`
+
+brew install docker-compose
+
+brew command not found, zsh keeps forgetting brew <br>
+` *run these commands* ` <br>
+
+/opt/homebrew/bin/brew doctor  <br>
+echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc <br>
+source ~/.zshrc <br>
+brew install docker-compose
+
+`2.4` connect the docker containers to local app
+<br>
+`Q` : does postgres by default connect with this? <br>
+```
+SPRING_DATASOURCE_USERNAME: myuser
+SPRING_DATASOURCE_PASSWORD: mypassword
+```
+
+Yes — as per the docker-compose.yml, Postgres will accept those credentials
+because we explicitly set them in the postgres service’s environment variables:
+```
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+```
+<br>
+
+`2.5 Q` If I include my local spring boot app service in docker-compose like this
+```yaml
+    services:
+      ecom-service:
+        build: .
+        platform: linux/amd64
+        container_name : ecom-service
+        ports:
+          - "4500:4322"
+```
+
+This will bring up the docker server on port 4322, whose url will be 4500.
+> So either connect the local spring boot app to docker containers
+> via specifying in application.properties <br>
+> OR use the docker container of your service at the port specified
+
+<br>
+
+`2.6` `How to connect local app to docker containers?`
+check application.properties
+
+<br>
+
+`2.7` `Failed to initialize dependency 'dataSourceScriptDatabaseInitializer' of 
+LoadTimeWeaverAware bean 'entityManagerFactory': 
+Error creating bean with name 'dataSourceScriptDatabaseInitializer' 
+defined in class path resource`
+
+`A` : 
+1. Have you added flyway scripts schema?
+2. Add flyway entries in application.properties (don't forget schema)
+3. Check redis key; *spring.data.redis.host* vs *spring.redis.host*
+
+`2.8` Check via terminal and UI (for db) if entries are being made
+
+`2.8` `How to add profiles/env for docker?`
+
+`2.9` `Why configmap.yaml?` <br>
+required for K8s <br>
+Inside Spring Boot, they match application.properties entries like:
+```
+spring.datasource.url=${SPRING_DATASOURCE_URL}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
+```
+
+<br>
+
+3. `POSTGRES`
+`3.1` default value for postgres column?
+`3.2` postgres needs psql?
+`3.3` brew install --cask dbeaver-community
+files required by driver in dbeaver -> Download
+connect using url `jdbc:postgresql://localhost:5432/mydb`
+Factory method 'dataSource' threw exception with message: Cannot load driver class: org.postgresql.Driver
+> add dependency
+```
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>42.6.0</version>
+</dependency>
+```
+`3.4` Check if app is running on port 8080
+
+`3.5` If you already added the dependency but still get this error in Docker, 
+issue might be that app is already runing via `app:` key specified in docker-compose
+
+Error creating bean with name 'dataSourceScriptDatabaseInitializer'
+flyway and 
+it might mean your 
+Dockerfile is only copying target/app.jar but you didn’t build a fat JAR (with dependencies).
+check and comment out app in docker-compose, it might be building local spring boot app image
+<br>
+mvn clean package spring-boot:repackage
+vs mvn clean install
+<br>
+
+```
+<goals>
+    <goal>repackage</goal>
+</goals>
+vs <goals>check?
+```
+
+<br>
+4. swagger <br>
+5. K8s <br>
+6. redis <br>
+7. kafka <br>
+8. spotless and its hook <br>
+9. logging <br>
+10. lombok <br>
+11. jasypt <br>
+12. flyway <br>
+13. profiles (local Dockerfile) <br>
+14. transactions <br>
