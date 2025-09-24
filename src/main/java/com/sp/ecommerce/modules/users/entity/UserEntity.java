@@ -66,7 +66,7 @@ public class UserEntity {
     private List<BankAccountDetails> bankAccountDetails;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
+    @Column(columnDefinition = "jsonb", name = "warehouse_tags")
     private List<WareHouseTag> wareHouseTags;
 
     @Enumerated(EnumType.STRING)

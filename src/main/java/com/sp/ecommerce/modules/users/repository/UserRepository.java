@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
     // UUID parsed to String?
     @Query(value = "Select * from commerce.users u " +
-            "WHERE u.user_id = userId", nativeQuery = true)
+            "WHERE u.user_id = :userId", nativeQuery = true)
     Optional<UserEntity> findByUserId(
             @Param("userId") UUID userId);
 

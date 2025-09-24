@@ -1,7 +1,6 @@
 package com.sp.ecommerce.modules.users.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sp.ecommerce.model.*;
 import com.sp.ecommerce.modules.users.model.enumType.UserStatus;
 import com.sp.ecommerce.modules.users.model.*;
 import jakarta.validation.Valid;
@@ -56,8 +55,7 @@ public class UserRequestDTO {
     private String taxId;
 
     @NotNull
-    @Size(max = 256, message = "Business name can have at max 256 characters")
-    @JsonProperty("business_account_details")
+    @JsonProperty("bank_account_details")
     private List<BankAccountDetails> bankAccountDetails;
 
     @NotNull
@@ -65,6 +63,6 @@ public class UserRequestDTO {
     private List<WareHouseTag> wareHouseTags;
 
     @NotNull
-    @JsonProperty("business_name")
+    @JsonProperty("status")
     private UserStatus status;
 }

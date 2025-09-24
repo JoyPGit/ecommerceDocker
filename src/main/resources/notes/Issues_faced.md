@@ -259,3 +259,88 @@ Steps
 > 
 > 3 comment out the property in docker-compose
 
+mapstruct
+
+needs 2 core and processor
+Mapstruct is an annotation processor
+w/o processor no code is generated
+annotationProcessorPaths -> maven-compiler-plugin 
+-> avoid conflicts and ensures correct ordering when using with lombok
+
+when using lombok+mapstruct -> if you override default compiler plugin behavior
+by setting annotationProcessorPaths, 
+-> include both lombok and mapstruct processor entries
+
+on project ecommerce: Resolution of annotationProcessorPath dependencies failed: version can neither be null, empty nor blank -> [Help 1]
+
+**lombok requires enabling annotation processing how???**
+> Go to Preferences > Build, Execution, Deployment > Compiler > Annotation Processors
+>✅ Ensure "Enable annotation processing" is checked
+
+mapstruct works with an interface, the processor
+if mapping is null with mapstruct, lombo isnt generating getters and setters
+Lombok + MapStruct binding, which can be tricky because Lombok generates methods at compile time, and MapStruct relies on those generated methods to perform field mapping.
+
+If the setup is wrong, MapStruct won’t “see” Lombok-generated getters/setters, and the mapper will fail to bind fields — just like you're experiencing.
+also the mapperImpl generated can be checked at target/generated-sources/annotations/UserMapperImpl
+
+don't forget to add this. why? @JsonProperty causes the names to change and
+hence without this it doesn't bind
+
+```
+<path>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok-mapstruct-binding</artifactId>
+    <version>0.2.0</version>
+</path>
+```
+
+without this mapstruct doesn't identify Mppaer interface
+<scope>provided</scope>
+
+[This dependency is needed to compile the code, but it will be provided at runtime by the environment (e.g., the 
+application server or build tool). 
+So don’t package it into the final artifact (like a JAR or WAR).]
+
+[mapstruct-processor is only needed during compilation to generate the mapper classes. 
+It's not needed at runtime. Marking it as provided keeps your final build clean 
+and avoids unnecessary dependencies in your runtime classpath.]
+
+For validation checks this is reqd
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+
+
+wareHouseTags -> add column name in entity as hibernate converts wareHouseTags to ware_house_tags  while it's 
+defined as warehouse_tags in dto and entity
+
+And most importantly: your DTO class is using @JsonProperty(...) to rename fields, which can cause field-name mismatches if your UserEntity uses the original field names.
+
+
+What @RequestBody Does:
+
+> Converts the JSON/XML body of a request into a Java object.
+> Uses HttpMessageConverters under the hood to perform the conversion (like MappingJackson2HttpMessageConverter for 
+> JSON) for content-type =application/json
+> Typically used in @PostMapping, @PutMapping, etc., where there’s a request payload.
+> use in controller, if used in service layer, service would be coupled to HttpMessageConverter machinery
+
+path variable vs request param
+added valid in controller
+
+org.postgresql.util.PSQLException: ERROR: null value in column "is_deleted" of relation "users" violates not-null 
+constraint??
+even after setting default in postgres script, still hibernate overrides it.
+So always set default val in entity, but make changes for variables not 
+present in DTO like isDeleted, set default value in mapper using constant
+[@Mapping(target = "status", constant = "ACTIVE")]
+
+don't forget to build after mapstruct changes
+
+[org.springframework.web.HttpMediaTypeNotAcceptableException: No acceptable representation]
+
+how slf4j works?
+
+without @Service too, there is no compile error
