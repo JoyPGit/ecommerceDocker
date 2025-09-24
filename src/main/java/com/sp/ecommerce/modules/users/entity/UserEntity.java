@@ -21,9 +21,10 @@ import java.util.*;
 @Builder
 @Table(name = "users", schema = "commerce") // check script in migration
 /**
- * why validations in entity?
+ * why validations in entity? because we map the req DTO to entity
  * use same as in requestDTO, remove @JsonProperty
  * for data type e.g. enum, json and blob, check script
+ * add some validations like unique in script to avoid a query
  */
 public class UserEntity {
     @Id

@@ -312,6 +312,9 @@ For validation checks this is reqd
     <artifactId>spring-boot-starter-validation</artifactId>
 </dependency>
 
+business_name if empty is not considered as null, hence @NotNull doesn't catch it.
+For strings use @NotBlank or @NotEmpty. NoTBlank checks for white spaces as well
+
 
 wareHouseTags -> add column name in entity as hibernate converts wareHouseTags to ware_house_tags  while it's 
 defined as warehouse_tags in dto and entity
