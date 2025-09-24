@@ -21,6 +21,7 @@ readme in VSCode (tab -> rt clk -> Open Preview) before commit
 > Italics *Note* or _Note_ <br>
 > Highlight with bold **`Note`**  <br>
 > Bold with italics **_Note_**  <br>
+> Strikethrough ~~note~~
 
 <br>
 

@@ -165,6 +165,9 @@ vs <goals>check?
 12. flyway <br>
 13. profiles (local Dockerfile) <br>
 14. transactions <br>
+15. jmeter
+16. sonar
+17. datadog?
 
 
 started with docker-compose up --build
