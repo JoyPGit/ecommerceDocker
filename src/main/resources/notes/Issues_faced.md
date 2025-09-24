@@ -195,3 +195,19 @@ Dockerfile is only copying target/app.jar but you didn’t build a fat JAR (with
 check and comment out app in docker-compose, it might be building local spring boot app image
 
 works locally too by commenting out the app/service in docker-compose
+
+
+dev-tools?
+lombok mapstruct annotationProcessPaths required in pom.xml
+
+regexp "^[]" */+ $ ?
+
+why @JsonProperty
+
+all changes in entity should be effected via flyway, not hibernate
+ddl-auto = none
+
+use alter script to change entity after initial draft
+
+@NotNull vs NonNull
+
