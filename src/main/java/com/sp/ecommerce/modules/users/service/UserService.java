@@ -1,7 +1,7 @@
-package com.sp.ecommerce.service;
+package com.sp.ecommerce.modules.users.service;
 
-import com.sp.ecommerce.dto.request.UserRequestDTO;
-import com.sp.ecommerce.dto.response.UserResponseDTO;
+import com.sp.ecommerce.modules.users.dto.request.UserRequestDTO;
+import com.sp.ecommerce.modules.users.dto.response.UserResponseDTO;
 import org.springframework.stereotype.Service;
 
 @Service

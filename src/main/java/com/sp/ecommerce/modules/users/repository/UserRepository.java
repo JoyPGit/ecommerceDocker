@@ -1,6 +1,6 @@
-package com.sp.ecommerce.repository;
+package com.sp.ecommerce.modules.users.repository;
 
-import com.sp.ecommerce.entity.UserEntity;
+import com.sp.ecommerce.modules.users.entity.UserEntity;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;

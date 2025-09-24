@@ -1,7 +1,7 @@
-package com.sp.ecommerce.entity;
+package com.sp.ecommerce.modules.users.entity;
 
-import com.sp.ecommerce.model.*;
-import com.sp.ecommerce.model.enumType.*;
+import com.sp.ecommerce.modules.users.model.*;
+import com.sp.ecommerce.modules.users.model.enumType.*;
 import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;

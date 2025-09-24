@@ -1,4 +1,4 @@
-package com.sp.ecommerce.model.enumType;
+package com.sp.ecommerce.modules.users.model.enumType;
 
 public enum UserType {
     DISTRIBUTOR, MANUFACTURER, CUSTOMER

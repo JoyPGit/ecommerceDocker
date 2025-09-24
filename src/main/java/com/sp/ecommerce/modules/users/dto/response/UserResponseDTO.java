@@ -1,10 +1,8 @@
-package com.sp.ecommerce.dto.response;
+package com.sp.ecommerce.modules.users.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sp.ecommerce.model.*;
-import com.sp.ecommerce.model.enumType.UserStatus;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
+import com.sp.ecommerce.modules.users.model.enumType.UserStatus;
+import com.sp.ecommerce.modules.users.model.*;
 
 import java.time.Instant;
 import java.util.List;

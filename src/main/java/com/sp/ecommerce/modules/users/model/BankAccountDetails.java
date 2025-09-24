@@ -1,4 +1,4 @@
-package com.sp.ecommerce.model;
+package com.sp.ecommerce.modules.users.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Size;
