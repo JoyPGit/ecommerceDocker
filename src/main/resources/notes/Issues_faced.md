@@ -22,6 +22,11 @@ mvn package
 **Do you want this Dockerfile just to run a prebuilt JAR, or do you want it
 to also build the JAR inside Docker (multi-stage build)?**
 
+[+] Running 1/1
+✔ Container flyway  Recreated                                                                                                0.1s
+Attaching to flyway, kafka, postgres, redis, zookeeper
+
+
 `2.2` how to get jar without version in name?
 In your pom.xml, add this under <build>:
 
@@ -210,4 +215,44 @@ ddl-auto = none
 use alter script to change entity after initial draft
 
 @NotNull vs NonNull
+sql -> UUID NOT NULL UNIQUE DEFAULT
+gen_random_uuid()
+
+create index
+add logs table for audit
+
+after restarting docker, dbeaver datasource was invalidated
+disconnect the db and connect [OR] Close dbeaver and restart
+How to Prevent This
+Regularly restarting containers	It's OK, but keep using a named volume (postgres_data) so data persists
+
+user_type_enum doesn't exist -> add enums in script
+
+flyway always shows baseline and no version update, remove baseline in application.properties
+`Adding baselineOnMigrate=true to the migrate command can silently cause Flyway to skip older migrations.`
+
+You dropped the flyway_schema_history table, and now Flyway won't recreate it?
+
+
+```
+Your commerce schema already has existing tables (or objects), but Flyway has never managed it before — there’s no 
+Flyway schema history table (flyway_schema_history) to track migrations. 
+
+It refuses to run migrations on a non-empty schema without baseline info, to avoid messing up existing data.
+You need to tell Flyway where to start from by baselining.
+```
+
+Steps
+> 1 Add this in docker-compose under flyway
+```
+      - -schemas=commerce
+      - -createSchemas=true
+      - -baselineOnMigrate=true
+```
+> 2 ~~add spring.flyway.baseline-on-migrate=true in application.properties~~ <br>
+> why? if you are running the app locally, docker will pick values from docker-compose,
+> **so any changes to application.properties don't matter**
+> Docker builds the image from compose and changes to docker-compose are independent of spring boot app changes <br>
+> 
+> 3 comment out the property in docker-compose
 
