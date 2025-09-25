@@ -161,9 +161,24 @@ vs <goals>check?
 8. spotless and its hook <br>
 9. logging <br>
 10. lombok <br>
+
+add lombok plugin to IntelliJ
+Without the plugin:
+> IntelliJ can’t “see” the generated code (e.g., getters, setters, constructors, etc.). <br>
+> You’ll see false positives like: "Cannot resolve method", "Field is never assigned" <br>
+>  Missing method or field errors — even if the code compiles fine.
+
+Add the dependency and enable annotation processing
+> Preferences / Settings → Build, Execution, Deployment → Compiler → Annotation Processors
+
+
 11. jasypt <br>
 12. flyway <br>
 13. profiles (local Dockerfile) <br>
+
+> @ActiveProfiles("test")  // why?
+    "When running this test, use the application-test.yml or application-test.properties configuration instead of the default."
+
 14. transactions <br>
 15. jmeter
 16. sonar
@@ -237,6 +252,7 @@ flyway always shows baseline and no version update, remove baseline in applicati
 You dropped the flyway_schema_history table, and now Flyway won't recreate it?
 
 
+
 ```
 Your commerce schema already has existing tables (or objects), but Flyway has never managed it before — there’s no 
 Flyway schema history table (flyway_schema_history) to track migrations. 
@@ -259,6 +275,15 @@ Steps
 > 
 > 3 comment out the property in docker-compose
 
+does flyway craete new schema everytime with this flag? in docker-compose
+- -createSchemas=true
+  ChatGPT said:
+
+Great question.
+
+No, Flyway does not create a new schema every time with -createSchemas=true.
+
+---
 mapstruct
 
 needs 2 core and processor
@@ -347,3 +372,100 @@ don't forget to build after mapstruct changes
 how slf4j works?
 
 without @Service too, there is no compile error
+
+@SpringBootTest -> contextLoads fails when docker is not running
+it needs to connect to db, why?
+If spring boot uses db (specified in application.properties), the context is set
+and it looks for the same context in test, Hence h2
+-> try with h2??
+
+Cannot load driver class: org.h2.Driver
+means Spring Boot is trying to use H2 (in-memory database), but the H2 JDBC driver 
+is not on the classpath — i.e., the H2 dependency is missing from your pom.xml.
+classpath -> pom.xml
+
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <scope>test</scope>
+</dependency>
+
+Or, if you also want to run the app locally with H2 (not just for tests), remove the <scope>test</scope>:
+
+but it has issues with flyway, so disable it
+
+
+
+
+e2e tests via test Container
+
+
+[All about tests]
+
+@SpringBootTest needs db?
+
+Yes — by default, @SpringBootTest does require a working database if your application is configured to use one 
+(like PostgreSQL via Spring Data JPA).
+What is this config? if you specify datasource in application.properties
+
+✅ Why?
+@SpringBootTest loads the entire Spring ApplicationContext, including:
+
+All beans (repositories, services, controllers, etc.)
+Spring Boot auto-configurations (like JPA, Flyway, Liquibase, etc.)
+
+The database connection (if configured)
+So if you have something like this in application.yml:
+
+```
+spring.datasource.url=jdbc:postgresql://localhost:5432/mydb
+spring.datasource.username=myuser
+spring.datasource.password=mypassword
+```
+
+
+➡️ Spring Boot will try to connect to that DB when the test starts.
+
+🔧 What if you don’t want a real DB for tests?
+✅ Option 1: Use an in-memory database like H2 for tests
+
+Use @ActiveProfiles("test") and define application-test.properties with H2:
+
+# src/test/resources/application-test.properties
+Then annotate your test class:
+```java
+@SpringBootTest
+@ActiveProfiles("test")
+public class SomeServiceTest {
+// test runs using H2
+
+}
+```
+
+✅ Option 2: Mock database dependencies
+
+If your test doesn't need a real DB connection, use:
+@WebMvcTest, @DataJpaTest, or @MockBean to load partial context
+
+Or use unit tests without Spring context at all
+
+Example using @WebMvcTest:
+
+@WebMvcTest(UserController.class)
+public class UserControllerTest {
+
+    @MockBean
+    private UserService userService;
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    // No DB needed!
+}
+
+✅ Option 3: Use Testcontainers (with Docker)
+
+If you want real DB behavior in tests but don’t want to use a shared Postgres instance, you can use Testcontainers
+to spin up a containerized Postgres for your test.
+
+But this requires Docker and fails if Docker is not running.
