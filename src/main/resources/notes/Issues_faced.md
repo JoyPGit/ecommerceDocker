@@ -365,6 +365,9 @@ So always set default val in entity, but make changes for variables not
 present in DTO like isDeleted, set default value in mapper using constant
 [@Mapping(target = "status", constant = "ACTIVE")]
 
+Why add constraints in sql script if hibernate overrides it?
+For integrity during manual entries
+
 don't forget to build after mapstruct changes
 
 [org.springframework.web.HttpMediaTypeNotAcceptableException: No acceptable representation]
@@ -431,7 +434,8 @@ spring.datasource.password=mypassword
 
 Use @ActiveProfiles("test") and define application-test.properties with H2:
 
-# src/test/resources/application-test.properties
+[_src/test/resources/application-test.properties_]
+
 Then annotate your test class:
 ```java
 @SpringBootTest
@@ -469,3 +473,173 @@ If you want real DB behavior in tests but don’t want to use a shared Postgres 
 to spin up a containerized Postgres for your test.
 
 But this requires Docker and fails if Docker is not running.
+
+
+### **Can i use h2 for e2e tests?** 
+<br> 
+Yes, you absolutely can use H2 for end-to-end (E2E) tests — and it’s a very common practice.
+
+But whether you should depends on what kind of coverage and realism you need from your tests.
+
+✅ When it makes sense to use H2 for E2E tests
+
+H2 is fast, lightweight, and in-memory, so it’s great when:
+
+✅ You want fast E2E test runs without Docker or external services.
+✅ You don't rely on Postgres-specific features (e.g., native JSONB, sequences, specific types).
+✅ Your application uses JPA/Hibernate in a portable way (i.e., not tightly bound to Postgres).
+
+⚠️ When using H2 for E2E can be dangerous
+❌ You're using PostgreSQL-specific features, such as:
+jsonb, uuid, or array columns
+Native SQL queries with ILIKE, ::cast, etc.
+citext, tsvector, custom types
+
+❌ Your tests pass in H2 but fail in real Postgres
+
+❌ You want true production fidelity
+
+---
+### Unit Tests
+
+Skip integration tests during install
+
+If you only want to run unit tests and skip integration tests with Testcontainers during install, mark them separately.
+
+✅ Use Maven profile for integration tests:
+
+Tag integration tests using a custom JUnit tag:
+
+@Tag("integration")
+@Testcontainers
+@SpringBootTest
+public class EcommerceIntegrationTest {
+// ...
+}
+
+
+Configure Maven Surefire and Failsafe plugins in your pom.xml:
+
+<build>
+  <plugins>
+
+    <!-- Unit tests -->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <version>3.5.3</version>
+      <configuration>
+        <excludedGroups>integration</excludedGroups>
+      </configuration>
+    </plugin>
+
+    <!-- Integration tests -->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-failsafe-plugin</artifactId>
+      <version>3.1.2</version>
+      <executions>
+        <execution>
+          <goals>
+            <goal>integration-test</goal>
+            <goal>verify</goal>
+          </goals>
+          <configuration>
+            <groups>integration</groups>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+
+  </plugins>
+</build>
+
+
+Why Use maven-surefire-plugin?
+🔹 By default:
+
+Maven implicitly uses maven-surefire-plugin for unit tests during the test phase.
+But the default version might be outdated, especially if you're using JUnit 5 or custom settings.
+
+<version>3.1.2</version> <!-- Use 3.x for JUnit 5 -->
+When You Should Configure It Explicitly
+
+Using JUnit 5	                        ✅ Yes — needs Surefire 3.x+
+Custom test includes/excludes         	✅ Yes
+Run tests in parallel               	✅ Yes
+Control test timeouts or system props	✅ Yes
+Run Only Specific Tests	            	✅ Yes
+
+<configuration>
+  <includes>
+    <include>**/*Test.java</include>
+  </includes>
+  <excludes>
+    <exclude>**/IntegrationTest.java</exclude>
+  </excludes>
+</configuration>
+
+
+Then run:
+
+# Skip integration tests
+mvn clean install
+
+# OR run with integration tests
+mvn clean install -Pwith-integration
+
+```java
+
+@SpringBootTest
+@ActiveProfiles("test")
+public class UserServiceUnitTest {
+
+    @Autowired
+    private UserServiceImpl userService;
+
+    @Autowired
+    private UserRepository repository;
+
+    @Autowired
+    private UserMapper userMapper;
+}
+
+
+```
+
+@SpringBootTest in unite test will cause issue. Why? 
+
+@SpringBootTest loads the full Spring context.
+
+But you're using Mockito annotations (@Mock, @InjectMocks), which work outside of Spring context.
+
+@InjectMocks is a Mockito feature — not Spring-aware — and doesn’t inject Spring beans like UserMapper.
+
+get rid of @SpringBootTest and @ActiveProfiles
+
+testUserEntity is null
+
+// ❌ Remove this
+// @Mock
+// private UserEntity testUserEntity;
+
+// ✅ Instead, create a real instance in your test method
+private UserEntity testUserEntity;
+
+By default, fields like UUID userId are null, and setUserId() does nothing unless stubbed.
+You’re trying to use it like a normal object, which it’s not.
+
+Spring Boot 3.1+ typically includes Mockito 5.x.
+
+Without `@ExtendWith(MockitoExtension.class)`
+
+Your @Mock or @InjectMocks fields will be null
+Tests will throw NullPointerException
+You'll have to call MockitoAnnotations.openMocks(this) manually
+
+
+**static constant util -> create an instance and hold in static var and reuse it**
+
+
+--- 
+### Test Container
