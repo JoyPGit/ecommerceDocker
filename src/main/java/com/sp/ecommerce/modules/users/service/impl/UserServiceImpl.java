@@ -15,11 +15,15 @@ import java.util.*;
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
-    @Autowired
-    UserRepository repository;
+    private final UserRepository repository;
+
+    private final UserMapper userMapper;
 
     @Autowired
-    UserMapper userMapper;
+    UserServiceImpl(UserRepository repository, UserMapper mapper){
+        this.repository = repository;
+        this.userMapper = mapper;
+    }
 
     @Override
     public UserResponseDTO findUserByUserId(String userId) {

@@ -1,7 +1,7 @@
 package com.sp.ecommerce.modules.users.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sp.ecommerce.modules.users.model.enumType.UserStatus;
+import com.sp.ecommerce.modules.users.model.enumType.*;
 import com.sp.ecommerce.modules.users.model.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Validated
+@Builder
 public class UserRequestDTO {
     @NotBlank(message = "Business name cannot be blank")
     @Size(max = 256, message = "Business name can have at max 256 characters.")
@@ -22,7 +23,7 @@ public class UserRequestDTO {
     private String businessName;
 
     @JsonProperty("type")
-    private String type;
+    private UserType type;
 
     @Valid
     @JsonProperty("address")

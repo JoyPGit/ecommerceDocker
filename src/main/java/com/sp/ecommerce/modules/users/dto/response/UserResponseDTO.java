@@ -1,6 +1,6 @@
 package com.sp.ecommerce.modules.users.dto.response;
 
-import com.sp.ecommerce.modules.users.model.enumType.UserStatus;
+import com.sp.ecommerce.modules.users.model.enumType.*;
 import com.sp.ecommerce.modules.users.model.*;
 import lombok.*;
 
@@ -14,7 +14,7 @@ import java.util.*;
 public class UserResponseDTO {
     private UUID userId;
     private String businessName;
-    private String type;
+    private UserType type;
     private Address address;
     private String businessEmail;
     private String businessPhone;
