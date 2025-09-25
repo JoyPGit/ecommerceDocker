@@ -51,7 +51,7 @@ public class UserServiceUnitTest {
     }
 
     @Test
-    @DisplayName("createUser shoudl save the entity")
+    @DisplayName("createUser should save the entity")
     void testCreateUser(){
         UserRequestDTO requestDTO = getUserRequestDTO();
         UserEntity preSaveEntity = getPreSaveUserEntity();

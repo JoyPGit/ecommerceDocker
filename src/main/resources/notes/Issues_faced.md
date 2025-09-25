@@ -640,6 +640,17 @@ You'll have to call MockitoAnnotations.openMocks(this) manually
 
 **static constant util -> create an instance and hold in static var and reuse it**
 
+---
+
+Controller mockmvc test
+check thr imports carefully 
+jsonPath mockMvcResultMatchers
+MockitoBean is required with WebMvcTest
+
+ObjectMapper is for java <-> json
+Will add Gson later for handling Instant
+
+
 
 --- 
 ### Test Container
