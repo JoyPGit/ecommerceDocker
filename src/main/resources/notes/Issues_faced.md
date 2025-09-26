@@ -453,6 +453,16 @@ If your test doesn't need a real DB connection, use:
 
 Or use unit tests without Spring context at all
 
+
+Controller mockmvc test
+check thr imports carefully 
+jsonPath mockMvcResultMatchers
+MockBean is required with WebMvcTest
+
+Use @MockBean in your Spring Boot tests when you want Spring to manage and inject the mock.
+
+Ignore @MockitoBean — it’s not an official or recognized annotation.
+
 Example using @WebMvcTest:
 
 @WebMvcTest(UserController.class)
@@ -619,6 +629,9 @@ get rid of @SpringBootTest and @ActiveProfiles
 
 testUserEntity is null
 
+
+
+
 // ❌ Remove this
 // @Mock
 // private UserEntity testUserEntity;
@@ -642,10 +655,6 @@ You'll have to call MockitoAnnotations.openMocks(this) manually
 
 ---
 
-Controller mockmvc test
-check thr imports carefully 
-jsonPath mockMvcResultMatchers
-MockitoBean is required with WebMvcTest
 
 ObjectMapper is for java <-> json
 Will add Gson later for handling Instant
@@ -654,3 +663,58 @@ Will add Gson later for handling Instant
 
 --- 
 ### Test Container
+
+org.springframework.dao.InvalidDataAccessResourceUsageException: could not prepare statement 
+[Schema "COMMERCE" not found; SQL statement: ->
+> 1 tries to connect to h2?
+> 2 Is the PostgreSQLTestContainer properly implemented and started? <br>
+Pulling docker image: testcontainers/ryuk:0.12.0. Please be patient; this may take some time but only needs to be done once.
+
+> 3 is db initialized properly? <br>
+> Is it possibler that h2 is still being used? <br>
+> remove h2 properties in application-test.properties <br>
+You cannot customize the container startup via .withInitScript() when using @ServiceConnection because 
+> Spring manages the container internally. <br>
+Instead, initialize your schema using schema.sql/data.sql files, Flyway/Liquibase migrations,
+> **REMEMBER** Testcontainers do NOT depend on Flyway.
+> or programmatically run SQL commands on the DataSource. <br>
+These SQL scripts will be executed after the container & datasource are ready.
+
+
+But commenting h2 properties causes the context to not find any db.
+Trying by spinning up docker container for postgres, but will local
+spring boot app connect to it?
+yes because i hadn't added activeprofiles = test, so is it possible it was picking from application,properties?
+
+how can having test containers but not having h2 in application-test.properties work with spring context?
+
+When you use Testcontainers (like PostgreSQL) in your integration tests, the datasource configuration typically comes from your Spring properties (e.g., application-test.properties).
+If you do NOT include H2 (or any in-memory DB) config in application-test.properties, Spring Boot will expect you to provide a real database configuration (like PostgreSQL) either:
+
+Directly in your application-test.properties or
+
+Programmatically, e.g., via Testcontainers integration or dynamic properties.
+
+
+How does Spring Boot wiring work with Testcontainers then?
+Testcontainers usually spins up a container dynamically in your test code.
+
+You then inject those dynamic connection details (URL, username, password) into Spring’s datasource config 
+before the context loads — typically via: **@DynamicPropertySource**
+
+@ServiceConnection?
+
+Introduced in Spring Boot 3.2+, @ServiceConnection is an annotation designed to automatically bind 
+a Testcontainer or any external service connection to your application’s configuration.
+
+It reduces boilerplate by automatically wiring your container’s connection details into your Spring environment 
+without needing @DynamicPropertySource or manual property overrides.
+
+TO make @SpringBootTest work w/o h, use @Testcontainers
+and specify a postgres connection inside the test class
+```
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> DB_CONTAINER = new PostgreSQLContainer<>(
+            DockerImageName.parse(PostgreSQLContainer.IMAGE).withTag("16-alpine"));
+```
