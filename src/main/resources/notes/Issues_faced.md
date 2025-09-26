@@ -718,3 +718,37 @@ and specify a postgres connection inside the test class
     static PostgreSQLContainer<?> DB_CONTAINER = new PostgreSQLContainer<>(
             DockerImageName.parse(PostgreSQLContainer.IMAGE).withTag("16-alpine"));
 ```
+
+
+check which db is connected to in integration test
+#### @Testcontainers annotation
+> Tells JUnit Jupiter (JUnit 5) to integrate with the Testcontainers lifecycle. <br>
+> Ensures containers annotated with @Container are started before tests run and stopped after. <br>
+> Works with both static and instance containers. <br>
+> <br>
+> Without it: <br>
+> Testcontainers won't start your container automatically. <br>
+> You’ll have to manage container startup/shutdown manually.
+
+
+#### @Container annotation:
+
+> Marks a Testcontainers container field (like PostgreSQLContainer, MongoDBContainer, etc.). <br> 
+> Tells Testcontainers to manage the lifecycle of this container. <br>
+> It can be: <br>
+> static — shared across all tests in the class <br> 
+> 
+But I have defined the container in two classes PostgreSQLTestContainer.java and EcommerceApplicationTests.java?
+How to reuse it?
+
+Define an abstract base class (not interface), mark the variable static for reuse.
+The Container for test can be initialized inside an interface or an abstract class.
+But annotate with @TestContainers ->
+Caused by: java.lang.IllegalStateException: Mapped port can only be obtained after the container is started
+as the container hasn't been spun up, while we log url and name and hence error
+Defining Containers in an Abstract Class — ✅ Recommended
+
+for incorrect commit messages or changes in last commit
+git commit --amend
+i -> interactive -> make changes in commit -> save (esc) :wq!
+git push -f
