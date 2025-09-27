@@ -1,6 +1,6 @@
 package com.sp.ecommerce.shared.config.kafka;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
@@ -55,9 +55,14 @@ public class CustomJsonSerializer<T> implements Serializer<T> {
         javaTimeModule.addDeserializer(LocalDateTime.class,
                 new LocalDateTimeDeserializer(customFormatter));
 
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        objectMapper.registerModule(javaTimeModule);
+//        objectMapper.setDateFormat(new SimpleDateFormat(Constants.DATE_TIME_FORMAT));
+//        return objectMapper;
+
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(javaTimeModule);
-        objectMapper.setDateFormat(new SimpleDateFormat(Constants.DATE_TIME_FORMAT));
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         return objectMapper;
     }
 

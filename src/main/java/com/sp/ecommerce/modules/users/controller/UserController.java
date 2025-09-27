@@ -1,5 +1,8 @@
 package com.sp.ecommerce.modules.users.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.sp.ecommerce.modules.users.dto.request.UserRequestDTO;
 import com.sp.ecommerce.modules.users.dto.response.UserResponseDTO;
 import com.sp.ecommerce.modules.users.service.UserService;
@@ -36,9 +39,13 @@ public class UserController {
 
     // do we need to send json string?
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody @Valid UserRequestDTO requestDTO){
+    public ResponseEntity<?> createUser(@RequestBody @Valid UserRequestDTO requestDTO) throws JsonProcessingException {
         UserResponseDTO userResponseDTO = this.userService.createUser(requestDTO);
         this.kafkaProducerUtil.sendMessage(topic, userResponseDTO);
-        return ResponseEntity.ok().body(userResponseDTO);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        return ResponseEntity.ok().body(objectMapper.writeValueAsString(userResponseDTO));
     }
 }

@@ -898,4 +898,13 @@ Manually construct and configure your ObjectMapper
 
 Keep it self-contained and stateless
 
-iff kafka consuemr is generic then type erasure issue happens, create new instance of custom objectMapper
+iff kafka consumer is generic then type erasure issue happens, create new instance of custom objectMapper
+
+Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception 
+[Request processing failed: org.springframework.http.converter.HttpMessageConversionException: 
+Type definition error: [simple type, class java.time.Instant]] with root cause
+
+Jackson in controller is unable to convert Instant to json response in ResponseEntity
+need to convert via object mapper?
+
+objectMapper.writeValueAsString(userResponseDTO)
