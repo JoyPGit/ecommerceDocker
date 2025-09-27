@@ -748,7 +748,48 @@ Caused by: java.lang.IllegalStateException: Mapped port can only be obtained aft
 as the container hasn't been spun up, while we log url and name and hence error
 Defining Containers in an Abstract Class — ✅ Recommended
 
-for incorrect commit messages or changes in last commit
+for incorrect commit messages or add related changes in last commit
+for new changes in file -> Stage it (+)
 git commit --amend
 i -> interactive -> make changes in commit -> save (esc) :wq!
 git push -f
+
+
+Kafka
+var jsonDeserializer = new JsonDeserializer 
+-> uses now deprecated spring kafka jsondeserializer
+-> use JsonSerde
+org.springframework.kafka.support.serializer.JsonSerde' is deprecated since version 4.0 and marked for removal
+
+You're absolutely right — as of Spring Kafka 4.0, even JsonSerde is deprecated and marked for removal. 
+This reflects a broader shift in Spring Kafka towards separating concerns and encouraging developers to use 
+more standardized or explicit serialization mechanisms.
+
+Recommended approach: Use a custom Deserializer<T> (or a reusable one)
+
+use ```public class JacksonKafkaDeserializer<T> implements Deserializer<T> {}```
+
+
+how to avoid casting to (T)?
+```java
+@Override
+    public T deserialize(String topic, Headers headers, byte[] data) {
+        if (data == null) return null;
+        try {
+            Header typeHeader = headers.lastHeader("type");
+            if (typeHeader != null) {
+                String typeName = new String(typeHeader.value(), StandardCharsets.UTF_8);
+                Class<?> dynamicType = Class.forName(typeName);
+                return (T) objectMapperJson.readValue(data, dynamicType);
+            }
+        }
+}
+
+```
+
+
+Why the cast is necessary
+
+At compile time, T is erased — Java doesn't know what it is.
+objectMapper.readValue(..., dynamicType) returns Object.
+So, to return a T, you have to cast: (T) object. it's unavoidable

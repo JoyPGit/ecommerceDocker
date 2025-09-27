@@ -92,6 +92,14 @@
 		</dependency>
 
 
+        <!-- https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>4.0.0-M5</version>
+        </dependency>
+
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -135,7 +143,6 @@
             <version>1.21.3</version>
             <scope>test</scope>
         </dependency>
-
 
     </dependencies>
 
