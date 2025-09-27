@@ -19,15 +19,15 @@ import java.util.*;
  */
 @Configuration
 public class KafkaConsumerConfig {
-    @Value("${spring.kafka-bootstrap-servers}")
+    @Value("${kafka.bootstrap-servers}")
     private String bootStrapServers;
 
     @Value("${kafka.group-id}")
     private String groupId;
 
 
-    @Autowired
-    private CustomJsonDeserializer customJsonDeserializer;
+//    @Autowired
+//    private CustomJsonDeserializer customJsonDeserializer;
 
     @Bean
     public Map<String, Object> consumerFactoryConfig(){
@@ -45,7 +45,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, Object> consumerFactory(){
         return new DefaultKafkaConsumerFactory<>(consumerFactoryConfig(),
-                new StringDeserializer(), customJsonDeserializer);
+                new StringDeserializer(), new CustomJsonDeserializer<>(Object.class));
     }
 
 

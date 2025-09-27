@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.*;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.header.*;
 import org.apache.kafka.common.serialization.Deserializer;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -33,9 +34,11 @@ import java.util.Map;
  * @param <T>
  *
  */
-@Component
+//@Component
 public class CustomJsonDeserializer<T> implements Deserializer<T> {
 
+    @Autowired
+    @Qualifier("customObjectMapper")
     ObjectMapper objectMapperJson;
     private final Class<T> targetType; // why final?
 
@@ -43,9 +46,7 @@ public class CustomJsonDeserializer<T> implements Deserializer<T> {
         super();
         this.objectMapperJson = new ObjectMapper();
         this.targetType = targetType;
-
     }
-
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {

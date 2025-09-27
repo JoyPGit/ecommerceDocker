@@ -793,3 +793,26 @@ Why the cast is necessary
 At compile time, T is erased — Java doesn't know what it is.
 objectMapper.readValue(..., dynamicType) returns Object.
 So, to return a T, you have to cast: (T) object. it's unavoidable
+
+Consider defining a bean of type 'java.lang.Class' in your configuration.
+```java
+
+public class CustomJsonDeserializer<T> implements Deserializer<T> {
+
+    ObjectMapper objectMapperJson;
+    private final Class<T> targetType; // why final?
+
+    public CustomJsonDeserializer(Class<T> targetType) {
+        super();
+        this.objectMapperJson = new ObjectMapper();
+        this.targetType = targetType;
+    }
+```
+because Spring is trying to instantiate your CustomJsonDeserializer<T> as a bean,
+but it doesn't know what concrete class to use for the generic T. 
+That's a common issue with generic types in deserializers used in Kafka when 
+Spring tries to autowire or instantiate them without parameters.
+
+Don't let Spring auto-discover this deserializer as a bean — it's just a utility passed to Kafka at runtime.
+Fix : Don't register CustomJsonDeserializer as a Spring bean, 
+add new instance, no autowiring of bean

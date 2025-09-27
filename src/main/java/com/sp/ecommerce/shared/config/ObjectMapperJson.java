@@ -14,7 +14,7 @@ import org.springframework.context.annotation.*;
 @Configuration
 public class ObjectMapperJson {
 
-    @Bean
+    @Bean("customObjectMapper")
     public ObjectMapper getObjectMapper(){
         return new ObjectMapper();
     }
