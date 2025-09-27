@@ -879,3 +879,23 @@ Error serializing JSON message] with root cause
 com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Java 8 date/time type `java.time.Instant` 
 not supported by default: add Module "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" to enable 
 handling (through reference chain: com.sp.ecommerce.modules.users.dto.response.UserResponseDTO["createdAt"])
+
+means that Jackson doesn't support Java 8 date/time types (Instant, LocalDateTime, etc.) out-of-the-box 
+unless the proper module is registered.
+implement a type adapter
+
+TODO : reuse this adapter in redis
+
+can we avoid running integration tests in mvn clean install
+
+objectMapperJson is null in CustomJsonSerializer
+
+Recommended for Kafka Serializer<T> classes:
+
+Don't rely on @Autowired
+
+Manually construct and configure your ObjectMapper
+
+Keep it self-contained and stateless
+
+iff kafka consuemr is generic then type erasure issue happens, create new instance of custom objectMapper

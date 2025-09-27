@@ -2,6 +2,11 @@ package com.sp.ecommerce.shared.config.kafka;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.sp.ecommerce.shared.config.ObjectMapperJson;
+import com.sp.ecommerce.shared.utils.Constants;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.header.*;
 import org.apache.kafka.common.serialization.Deserializer;
@@ -11,6 +16,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 /**
@@ -37,27 +45,49 @@ import java.util.Map;
 //@Component
 public class CustomJsonDeserializer<T> implements Deserializer<T> {
 
-    @Autowired
-    @Qualifier("customObjectMapper")
-    ObjectMapper objectMapperJson;
+//    @Autowired
+//    @Qualifier("customObjectMapper")
+//    ObjectMapper objectMapperJson;
     private final Class<T> targetType; // why final?
+
+    private ObjectMapper objectMapper;
 
     public CustomJsonDeserializer(Class<T> targetType) {
         super();
-        this.objectMapperJson = new ObjectMapper();
+//        this.objectMapperJson =
+//                com.sp.ecommerce.shared.config.ObjectMapperJson.getObjectMapperJson();
         this.targetType = targetType;
+        this.objectMapper = getObjectMapperCustom();
     }
+
+    private ObjectMapper getObjectMapperCustom(){
+        DateTimeFormatter customFormatter =
+                DateTimeFormatter.ofPattern(Constants.DATE_TIME_FORMAT);
+
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        // register custom serializer and deserializer
+        javaTimeModule.addSerializer(LocalDateTime.class,
+                new LocalDateTimeSerializer(customFormatter));
+        javaTimeModule.addDeserializer(LocalDateTime.class,
+                new LocalDateTimeDeserializer(customFormatter));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(javaTimeModule);
+        objectMapper.setDateFormat(new SimpleDateFormat(Constants.DATE_TIME_FORMAT));
+        return objectMapper;
+    }
+
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {
-        Deserializer.super.configure(configs, isKey);
+
     }
 
     @Override
     public T deserialize(String s, byte[]data) {
         if (data == null) return null;
         try {
-            return this.objectMapperJson.readValue(data, targetType);
+            return this.objectMapper.readValue(data, targetType);
         } catch (Exception e) {
             throw new SerializationException("Failed to deserialize Kafka message", e);
         }
@@ -86,7 +116,7 @@ public class CustomJsonDeserializer<T> implements Deserializer<T> {
             if (typeHeader != null) {
                 String typeName = new String(typeHeader.value(), StandardCharsets.UTF_8);
                 Class<?> dynamicType = Class.forName(typeName);
-                return (T) objectMapperJson.readValue(data, dynamicType);
+                return (T) objectMapper.readValue(data, dynamicType);
             }
         } catch (Exception e) {
             throw new SerializationException("Failed to deserialize Kafka message", e);
@@ -102,7 +132,7 @@ public class CustomJsonDeserializer<T> implements Deserializer<T> {
         try{
             byte[] bytes = new byte[data.remaining()];
             data.get(bytes); // Copy ByteBuffer contents into byte array
-            return objectMapperJson.readValue(bytes, targetType);
+            return objectMapper.readValue(bytes, targetType);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
