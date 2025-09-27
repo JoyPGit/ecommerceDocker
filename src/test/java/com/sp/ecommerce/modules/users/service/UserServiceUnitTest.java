@@ -4,7 +4,7 @@ import com.sp.ecommerce.modules.users.dto.request.UserRequestDTO;
 import com.sp.ecommerce.modules.users.entity.UserEntity;
 import com.sp.ecommerce.modules.users.repository.UserRepository;
 import com.sp.ecommerce.modules.users.service.impl.UserServiceImpl;
-import com.sp.ecommerce.shared.utils.UserMapper;
+import com.sp.ecommerce.shared.utils.UserPOJOMapper;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -26,7 +26,7 @@ public class UserServiceUnitTest {
     private UserRepository repository;
 
     @Mock
-    private UserMapper userMapper;
+    private UserPOJOMapper userPOJOMapper;
 
     @InjectMocks
     private UserServiceImpl userService; // impl?
@@ -44,7 +44,7 @@ public class UserServiceUnitTest {
     void testFindUserByUserId(){
         UUID userId = testUserEntity.getUserId();
         when(repository.findByUserId(any())).thenReturn(Optional.of(testUserEntity));
-        when(userMapper.toResponseDto(testUserEntity)).thenReturn(getUserResponseDTO());
+        when(userPOJOMapper.toResponseDto(testUserEntity)).thenReturn(getUserResponseDTO());
         var result = this.userService.findUserByUserId(userId.toString());
         assertThat(result).isNotNull();
         assertEquals(result.getUserId(), userId);
@@ -55,9 +55,9 @@ public class UserServiceUnitTest {
     void testCreateUser(){
         UserRequestDTO requestDTO = getUserRequestDTO();
         UserEntity preSaveEntity = getPreSaveUserEntity();
-        when(userMapper.toUserEntity(any(UserRequestDTO.class))).thenReturn(preSaveEntity);
+        when(userPOJOMapper.toUserEntity(any(UserRequestDTO.class))).thenReturn(preSaveEntity);
         when(this.repository.save(preSaveEntity)).thenReturn(getPostSaveUserEntity());
-        when(userMapper.toResponseDto(any(UserEntity.class))).thenReturn(getUserResponseDTO());
+        when(userPOJOMapper.toResponseDto(any(UserEntity.class))).thenReturn(getUserResponseDTO());
         var result = this.userService.createUser(requestDTO);
         assertThat(result).isNotNull();
     }

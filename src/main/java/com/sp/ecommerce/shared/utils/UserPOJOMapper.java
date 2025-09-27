@@ -7,9 +7,9 @@ import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring") // this makes it a Spring Bean
-public interface UserMapper {
+public interface UserPOJOMapper {
 
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+    UserPOJOMapper INSTANCE = Mappers.getMapper(UserPOJOMapper.class);
 
     UserResponseDTO toResponseDto(UserEntity user);
 

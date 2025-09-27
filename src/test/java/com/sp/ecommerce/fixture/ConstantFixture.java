@@ -5,8 +5,7 @@ import com.sp.ecommerce.modules.users.dto.response.UserResponseDTO;
 import com.sp.ecommerce.modules.users.entity.UserEntity;
 import com.sp.ecommerce.modules.users.model.*;
 import com.sp.ecommerce.modules.users.model.enumType.*;
-import com.sp.ecommerce.shared.utils.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sp.ecommerce.shared.utils.UserPOJOMapper;
 
 import java.time.Instant;
 import java.util.*;
@@ -29,11 +28,11 @@ public class ConstantFixture {
     public static final String WH_TAG_KEY_1 = "wh_tag_key_1";
     public static final String WH_TAG_VALUE_1 = "wh_tag_value_1";
 
-    private static UserMapper userMapper;
+    private static UserPOJOMapper userMapper;
     private static UUID USER_ID;
 
     static {
-        userMapper = UserMapper.INSTANCE;
+        userMapper = UserPOJOMapper.INSTANCE;
         USER_ID = UUID.randomUUID();
     }
 

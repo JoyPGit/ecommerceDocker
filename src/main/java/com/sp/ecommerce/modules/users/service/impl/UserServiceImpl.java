@@ -5,7 +5,7 @@ import com.sp.ecommerce.modules.users.dto.response.UserResponseDTO;
 import com.sp.ecommerce.modules.users.entity.UserEntity;
 import com.sp.ecommerce.modules.users.service.UserService;
 import com.sp.ecommerce.modules.users.repository.UserRepository;
-import com.sp.ecommerce.shared.utils.UserMapper;
+import com.sp.ecommerce.shared.utils.UserPOJOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,19 +17,19 @@ import java.util.*;
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
-    private final UserMapper userMapper;
+    private final UserPOJOMapper userPOJOMapper;
 
     @Autowired
-    UserServiceImpl(UserRepository repository, UserMapper mapper){
+    UserServiceImpl(UserRepository repository, UserPOJOMapper mapper){
         this.repository = repository;
-        this.userMapper = mapper;
+        this.userPOJOMapper = mapper;
     }
 
     @Override
     public UserResponseDTO findUserByUserId(String userId) {
         Optional<UserEntity> userEntity =
                 this.repository.findByUserId(UUID.fromString(userId));
-        return userMapper.toResponseDto(userEntity.get());
+        return userPOJOMapper.toResponseDto(userEntity.get());
     }
 
     /**
@@ -41,10 +41,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserResponseDTO createUser(UserRequestDTO requestDTO) {
-        UserEntity userEntity = this.userMapper.toUserEntity(requestDTO);
+        UserEntity userEntity = this.userPOJOMapper.toUserEntity(requestDTO);
         UserEntity savedEntity =  this.repository.save(userEntity);
         // override toString for UserEntity?
         log.info("user info saved in db {}", savedEntity.getUserId());
-        return this.userMapper.toResponseDto(savedEntity);
+        return this.userPOJOMapper.toResponseDto(savedEntity);
     }
 }

@@ -16,7 +16,7 @@ import org.testcontainers.utility.DockerImageName;
  *
  * why @TestContainers -> not used? container spun up in parent class
  * (AbstractPostgresTest)
- * 
+ *
  * @ActiveProfiles("test")  // why? so it picks vals from application-test.properties
  */
 @SpringBootTest
