@@ -816,3 +816,66 @@ Spring tries to autowire or instantiate them without parameters.
 Don't let Spring auto-discover this deserializer as a bean — it's just a utility passed to Kafka at runtime.
 Fix : Don't register CustomJsonDeserializer as a Spring bean, 
 add new instance, no autowiring of bean
+
+why @Service? -> because it's a utility for a specific purpose
+why in controller? message should be of type DTO, not entity
+
+
+@KafkaListener(topics = "#{'${kafka.topics}.split(',')}",
+groupId = "${kafka.group-id}",
+containerFactory = "kafkaListenerContainerFactory")
+expression parsing failed?
+
+
+Caused by: java.lang.VerifyError: Stack map does not match the one at exception handler 93
+Exception Details:
+Location:
+org/springframework/kafka/listener/KafkaMessageListenerContainer$ListenerConsumer.run()V @93: astore_3
+
+spring-kafka version 4.0.0-M5 is a milestone (pre-release) version, and very likely incompatible or 
+unstable with Spring Boot 3.2.2.
+
+omit the <version> entirely to use Spring Boot’s managed version (recommended):
+
+
+java.net.UnknownHostException: kafka
+
+spring.kafka.bootstrap-servers=localhost:29092 in application.properties
+Note: In your Kafka container, you exposed two listeners:
+
+PLAINTEXT://kafka:9092 — internal Docker network listener
+PLAINTEXT_HOST://localhost:29092 — host mapped listener for outside Docker
+
+Use port 29092 on localhost when connecting from outside Docker.
+
+replication factor 3 more than no of available brokers 1
+
+how to set default replication factor for kafka?
+```yaml
+  # Set default replication factor here:
+  KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+
+  # Optional: for automatic topic creation replication factor
+  KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+  KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+```
+Leader imbalance ratio for broker 1 is 0.0 
+
+org.apache.kafka.common.KafkaException: Could not instantiate class com.fasterxml.jackson.databind.JsonSerializer
+Kafka expects serializers implementing org.apache.kafka.common.serialization.Serializer interface. 
+Basically its own serializers not jackson's.
+
+again this is deprecated and hence, as in consumer write your own serializer
+
+custom serializer everywhere? why JsonSerializer in config map?
+json string or normal string?
+
+didn't modify producer factory -> java.lang.NoSuchMethodException: com.sp.ecommerce.shared.config.kafka.CustomJsonSerializer.<init>()
+modified both in producer and consumer, fixed
+
+Error serializing JSON message] with root cause
+
+com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Java 8 date/time type `java.time.Instant` 
+not supported by default: add Module "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" to enable 
+handling (through reference chain: com.sp.ecommerce.modules.users.dto.response.UserResponseDTO["createdAt"])

@@ -19,10 +19,10 @@ import java.util.*;
  */
 @Configuration
 public class KafkaConsumerConfig {
-    @Value("${kafka.bootstrap-servers}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String bootStrapServers;
 
-    @Value("${kafka.group-id}")
+    @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
 
 
@@ -37,7 +37,7 @@ public class KafkaConsumerConfig {
         configMap.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
                 StringDeserializer.class);
         configMap.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                JsonDeserializer.class);
+                CustomJsonDeserializer.class);
 
         return configMap;
     }

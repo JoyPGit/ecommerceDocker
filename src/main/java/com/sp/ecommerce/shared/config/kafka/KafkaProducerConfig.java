@@ -1,8 +1,7 @@
 package com.sp.ecommerce.shared.config.kafka;
 
-import com.fasterxml.jackson.databind.JsonSerializer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.common.serialization.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.kafka.core.*;
@@ -38,7 +37,7 @@ import java.util.*;
 @Configuration
 public class KafkaProducerConfig {
 
-    @Value("${kafka.bootstrap-servers}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String bootStrapServers;
 
     @Bean
@@ -46,13 +45,14 @@ public class KafkaProducerConfig {
         Map<String, Object> configMap = new HashMap<>();
         configMap.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootStrapServers);
         configMap.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configMap.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        configMap.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, CustomJsonSerializer.class);
         return configMap;
     }
 
     @Bean
     public ProducerFactory<String, Object> producerFactory(){
-        return new DefaultKafkaProducerFactory<>(producerFactoryConfig());
+        return new DefaultKafkaProducerFactory<>(producerFactoryConfig(),
+                new StringSerializer(), new CustomJsonSerializer<>(Object.class));
     }
 
     @Bean

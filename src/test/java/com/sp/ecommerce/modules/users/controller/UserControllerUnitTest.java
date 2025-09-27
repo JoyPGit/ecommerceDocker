@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sp.ecommerce.modules.users.dto.request.UserRequestDTO;
 import com.sp.ecommerce.modules.users.dto.response.UserResponseDTO;
 import com.sp.ecommerce.modules.users.service.UserService;
+import com.sp.ecommerce.shared.utils.KafkaProducerUtil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,6 +32,9 @@ public class UserControllerUnitTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private KafkaProducerUtil<Object> kafkaProducerUtil;
 
     private UserRequestDTO requestDTO;
     private UserResponseDTO responseDTO;

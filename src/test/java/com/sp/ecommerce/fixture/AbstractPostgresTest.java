@@ -13,8 +13,10 @@ import org.testcontainers.utility.DockerImageName;
 
 public abstract class AbstractPostgresTest {
 
+    private static final String POSTGRES_VERSION = "postgres:16-alpine";
+
     @ServiceConnection
     @Container
     protected static PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
-            new PostgreSQLContainer<>(DockerImageName.parse("postgres:16-alpine"));
+            new PostgreSQLContainer<>(DockerImageName.parse(POSTGRES_VERSION));
 }
