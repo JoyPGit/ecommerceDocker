@@ -1,23 +1,17 @@
 package com.sp.ecommerce.shared.config.kafka;
 
-import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.*;
-import com.fasterxml.jackson.datatype.jsr310.ser.*;
-import com.sp.ecommerce.shared.config.ObjectMapperJson;
-import com.sp.ecommerce.shared.utils.Constants;
+import com.sp.ecommerce.shared.utils.*;
+import com.sp.ecommerce.shared.utils.mapper.UserPOJOMapper;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.header.*;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
@@ -39,23 +33,26 @@ import java.util.Map;
  * deserializer.setUseTypeMapperForKey(true);
  *
  * With your custom deserializer (no addTrustedPackages needed):
+ *
+ * (T) for converting from one POJO to another, mapstruct?
  * @param <T>
  *
  */
 //@Component
 public class CustomJsonDeserializer<T> implements Deserializer<T> {
 
-//    @Autowired
-//    @Qualifier("customObjectMapper")
-//    ObjectMapper objectMapperJson;
-    private final Class<T> targetType; // why final?
+    @Autowired
+    private UserPOJOMapper userPOJOMapper;
 
+    // @Autowired
+    // @Qualifier("customJSONObjectMapper")
     private ObjectMapper objectMapper;
+     private final Class<T> targetType; // why final?
 
     public CustomJsonDeserializer(Class<T> targetType) {
         super();
 //        this.objectMapperJson =
-//                com.sp.ecommerce.shared.config.ObjectMapperJson.getObjectMapperJson();
+//                com.sp.ecommerce.shared.utils.mapper.ObjectMapperJson.getObjectMapperJson();
         this.targetType = targetType;
         this.objectMapper = getObjectMapperCustom();
     }

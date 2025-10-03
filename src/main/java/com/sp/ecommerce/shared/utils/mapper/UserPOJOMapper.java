@@ -1,4 +1,4 @@
-package com.sp.ecommerce.shared.utils;
+package com.sp.ecommerce.shared.utils.mapper;
 
 import com.sp.ecommerce.modules.users.dto.request.UserRequestDTO;
 import com.sp.ecommerce.modules.users.dto.response.UserResponseDTO;

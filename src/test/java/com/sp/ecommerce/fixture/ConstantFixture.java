@@ -5,7 +5,7 @@ import com.sp.ecommerce.modules.users.dto.response.UserResponseDTO;
 import com.sp.ecommerce.modules.users.entity.UserEntity;
 import com.sp.ecommerce.modules.users.model.*;
 import com.sp.ecommerce.modules.users.model.enumType.*;
-import com.sp.ecommerce.shared.utils.UserPOJOMapper;
+import com.sp.ecommerce.shared.utils.mapper.UserPOJOMapper;
 
 import java.time.Instant;
 import java.util.*;

@@ -4,7 +4,7 @@ import com.sp.ecommerce.modules.users.dto.request.UserRequestDTO;
 import com.sp.ecommerce.modules.users.entity.UserEntity;
 import com.sp.ecommerce.modules.users.repository.UserRepository;
 import com.sp.ecommerce.modules.users.service.impl.UserServiceImpl;
-import com.sp.ecommerce.shared.utils.UserPOJOMapper;
+import com.sp.ecommerce.shared.utils.mapper.UserPOJOMapper;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;

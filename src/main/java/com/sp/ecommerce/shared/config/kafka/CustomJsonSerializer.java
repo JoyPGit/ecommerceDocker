@@ -4,17 +4,14 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.sp.ecommerce.shared.config.ObjectMapperJson;
 import com.sp.ecommerce.shared.utils.Constants;
+import lombok.NoArgsConstructor;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.header.*;
 import org.apache.kafka.common.serialization.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -27,20 +24,21 @@ import java.util.Map;
  * @param <T>
  *
  */
-//@Component
+@Component
+@NoArgsConstructor // needed this for tests. why??
 public class CustomJsonSerializer<T> implements Serializer<T> {
 
     @Autowired
-//    @Qualifier("customObjectMapper")
-    private final ObjectMapper objectMapper;
+    // @Qualifier("customJSONObjectMapper")
+    private ObjectMapper objectMapper;
 
-    private final Class<T> targetType; // why final?
+    private Class<T> targetType; // why final?
 
     public CustomJsonSerializer(Class<T> targetType) {
         super();
-        this.objectMapper = getObjectMapperCustom();
+       this.objectMapper = getObjectMapperCustom();
 //        this.objectMapperJson =
-//                com.sp.ecommerce.shared.config.ObjectMapperJson.getObjectMapperJson();
+//                com.sp.ecommerce.shared.utils.mapper.ObjectMapperJson.getObjectMapperJson();
         this.targetType = targetType;
     }
 

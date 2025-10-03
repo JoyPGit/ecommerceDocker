@@ -5,7 +5,7 @@ import com.sp.ecommerce.modules.users.dto.response.UserResponseDTO;
 import com.sp.ecommerce.modules.users.entity.UserEntity;
 import com.sp.ecommerce.modules.users.service.UserService;
 import com.sp.ecommerce.modules.users.repository.UserRepository;
-import com.sp.ecommerce.shared.utils.UserPOJOMapper;
+import com.sp.ecommerce.shared.utils.mapper.UserPOJOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
