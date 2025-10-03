@@ -8,9 +8,12 @@ import com.sp.ecommerce.modules.users.repository.UserRepository;
 import com.sp.ecommerce.shared.utils.mapper.UserPOJOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
+import static com.sp.ecommerce.shared.utils.Constants.REDIS_KEY_USER;
 
 @Service
 @Slf4j
@@ -25,12 +28,14 @@ public class UserServiceImpl implements UserService {
         this.userPOJOMapper = mapper;
     }
 
+    @Cacheable(value = REDIS_KEY_USER, key = "#userId")
     @Override
     public UserResponseDTO findUserByUserId(String userId) {
         Optional<UserEntity> userEntity =
                 this.repository.findByUserId(UUID.fromString(userId));
         return userPOJOMapper.toResponseDto(userEntity.get());
     }
+
 
     /**
      * mapstruct mapper -> convert reqDTO to entity
@@ -39,6 +44,9 @@ public class UserServiceImpl implements UserService {
      * @param requestDTO
      * @return
      */
+    @Caching(put = {
+            @CachePut(value = REDIS_KEY_USER, key = "#result.userId")
+    })
     @Override
     public UserResponseDTO createUser(UserRequestDTO requestDTO) {
         UserEntity userEntity = this.userPOJOMapper.toUserEntity(requestDTO);

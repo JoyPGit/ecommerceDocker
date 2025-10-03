@@ -908,3 +908,35 @@ Jackson in controller is unable to convert Instant to json response in ResponseE
 need to convert via object mapper?
 
 objectMapper.writeValueAsString(userResponseDTO)
+
+kafka producer and consumer need custom config class for serialization and deserialization
+have added that (jackson is underlying)
+
+now to reuse
+
+Summary:
+
+You cannot avoid unchecked casts completely when dynamically loading class types at runtime with generics.
+Cast safely in one place, add @SuppressWarnings("unchecked") there.
+Document well why it's safe: e.g., you control the type header and payload format.
+Or relax the generic constraint and return Object.
+
+will add a specific kafka listener object
+
+Redis
+don't add version, let spring boot bom handle it
+
+GenricJackson2jsonRedisSerializer vs Jackson2JsonRedisSerializer
+use generic when you want to store User, Order, etc. helps avoid class cast/type mismatch
+
+should i use non genric and use prefix for keys?
+
+model mapper and mapstruct serve the same purpose, pojo to pojo conversion
+use objectMapper(jackson) for POJO to json and back
+
+Cannot resolve method 'readValue(T, Class<UserResponseDTO>)' ??
+UserResponseDTO data = objectMapper.readValue(message, UserResponseDTO.class);
+
+should is use String ?
+
+apply caching at service layer

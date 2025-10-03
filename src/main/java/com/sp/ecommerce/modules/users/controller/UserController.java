@@ -7,13 +7,17 @@ import com.sp.ecommerce.modules.users.dto.request.UserRequestDTO;
 import com.sp.ecommerce.modules.users.dto.response.UserResponseDTO;
 import com.sp.ecommerce.modules.users.service.UserService;
 //import io.swagger.v3.oas.annotations.tags.Tag;
-import com.sp.ecommerce.shared.utils.KafkaProducerUtil;
+import com.sp.ecommerce.shared.utils.*;
 import jakarta.validation.Valid;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.cache.annotation.*;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
+
+import static com.sp.ecommerce.shared.utils.Constants.REDIS_KEY_USER;
 
 //@Tag(name ="User", description = "Operations related to users")
 @RestController
@@ -22,10 +26,17 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    KafkaProducerUtil<Object> kafkaProducerUtil;
+    private KafkaProducerUtil<Object> kafkaProducerUtil;
+
+//    @Autowired
+//    private RedisUtil<Object> redisUtil;
+
+//    @Autowired
+//    @Qualifier("customJSONObjectMapper")
+//    ObjectMapper objectMapper;
 
     @Value("${kafka.topics}")
     private String topic;
@@ -36,6 +47,7 @@ public class UserController {
         UserResponseDTO userResponseDTO = this.userService.findUserByUserId(userId);
         return ResponseEntity.ok().body(userResponseDTO);
     }
+
 
     // do we need to send json string?
     @PostMapping
