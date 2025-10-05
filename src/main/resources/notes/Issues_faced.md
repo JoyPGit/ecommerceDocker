@@ -203,28 +203,24 @@ Add the dependency and enable annotation processing
         "properties": null
     }
 }
+18. exception
+{
+    "statusCode": "INTERNAL_SERVER_ERROR",
+    "headers": {},
+    "typeMessageCode": "problemDetail.type.java.util.NoSuchElementException",
+    "titleMessageCode": "problemDetail.title.java.util.NoSuchElementException",
+    "detailMessageCode": "problemDetail.java.util.NoSuchElementException",
+    "detailMessageArguments": null,
+    "body": {
+        "type": "about:blank",
+        "title": "Internal Server Error",
+        "status": 500,
+        "detail": "An unexpected error occurred",
+        "instance": null,
+        "properties": null
+    }
+}
 
-NoSuchElementException is diff from ResourceNotFoundException
-so controller advice picks parent class if no matching subclass exception is found
-but it's possible the issue is captured and rethrown as a generic RuntimeException, hence 
-controller adivce isn't matching. Throw the specific exception
-need less detailed message, create custom Response object
-
-
-to specify schema, need to add swagger
-
-add dependency in pom
-can exclude apache commons lang3
-
-HttpServletRequest vs WebRequest in error methods, this request can provide the 
-error path
-
-WebRequest is not a replacement for HttpServletRequest in all cases, but a wrapper/abstraction 
-that allows you to write more framework‑agnostic or interceptor logic without depending on Servlet APIs.
-
-Caused by: java.lang.IllegalStateException: Failed to introspect Class [org.springdoc.webmvc.ui.SwaggerConfig] 
-from ClassLoader [jdk.internal.loader.ClassLoaders$AppClassLoader@251a69d7]
-swagger and spring parent version mismatch for 2.8.x parent should 3.4.x and up
 
 startup >> 
 start docker engine/desktop
