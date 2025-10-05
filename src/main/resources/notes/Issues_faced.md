@@ -1018,3 +1018,8 @@ START WITH 1
 * CACHE 1;
 * This controls how many sequence values Postgres preallocates and stores in memory to improve performance.
 Also compress before storage and decompress when fetching
+
+
+pagination
+
+JPARepository by default extends PagingAndSortingRepository which extends CrudRepository

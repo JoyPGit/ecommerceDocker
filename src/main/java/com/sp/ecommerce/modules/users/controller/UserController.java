@@ -60,6 +60,26 @@ public class UserController {
         return ResponseEntity.ok().body(userResponseDTO);
     }
 
+    @Operation(summary = "Get a user by id")
+    @ApiResponses(
+            value = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",
+                            description = "User found successfully"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404",
+                            description = "User not found"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500",
+                            description = "Internal server error")
+            }
+    )
+    // path variable vs request param
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllUsers(
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize
+    ){
+        return ResponseEntity.ok().body(this.userService.findAllUsers(pageNumber, pageSize));
+    }
+
 
     @Operation(summary = "Create a new user")
     @ApiResponses(

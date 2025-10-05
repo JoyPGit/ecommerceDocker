@@ -12,12 +12,14 @@ import com.sp.ecommerce.shared.utils.mapper.UserPOJOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.*;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.print.Doc;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.sp.ecommerce.shared.utils.Constants.*;
 
@@ -47,13 +49,22 @@ public class UserServiceImpl implements UserService {
         return userPOJOMapper.toResponseDto(userEntity.get());
     }
 
+    public List<UserResponseDTO> findAllUsers(Integer pageNumber, Integer pageSize) {
+        Pageable p = PageRequest.of(pageNumber, pageSize);
+        Page<UserEntity> userEntities = this.repository.findAll(p);
+        List<UserEntity> userEntityList = userEntities.getContent();
+
+        return userEntityList.stream().map((userEntity ->
+                userPOJOMapper.toResponseDto(userEntity)))
+                .toList();
+    }
 
     /**
      * mapstruct mapper -> convert reqDTO to entity
      *                  -> convert entity to respDTO
      *
      * @param requestDTO
-     * @return
+     * @return UserResponseDTO
      */
     @Caching(put = {
             @CachePut(value = REDIS_KEY_USER, key = "#result.userId")
