@@ -55,4 +55,9 @@ public class UserServiceImpl implements UserService {
         log.info("user info saved in db {}", savedEntity.getUserId());
         return this.userPOJOMapper.toResponseDto(savedEntity);
     }
+
+    @Override
+    public void deleteUserById(String userId){
+        this.repository.softDeleteByUserId(UUID.fromString(userId));
+    }
 }

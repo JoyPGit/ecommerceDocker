@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import static com.sp.ecommerce.shared.utils.Constants.REDIS_KEY_USER;
+import static com.sp.ecommerce.shared.utils.Constants.*;
 
 //@Tag(name ="User", description = "Operations related to users")
 @RestController
@@ -59,5 +59,11 @@ public class UserController {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         return ResponseEntity.ok().body(objectMapper.writeValueAsString(userResponseDTO));
+    }
+
+    @DeleteMapping("/id/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable String userId){
+        this.userService.deleteUserById(userId);
+        return ResponseEntity.ok().body(USER_DELETE_SUCCESS);
     }
 }

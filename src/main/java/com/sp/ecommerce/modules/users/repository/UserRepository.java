@@ -25,6 +25,7 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     Optional<UserEntity> findByUserId(
             @Param("userId") UUID userId);
 
+    // why modifying?
     @Modifying
     @Query(value = "UPDATE commerce.users u " +
             "SET u.is_deleted = true " +

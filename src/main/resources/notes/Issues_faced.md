@@ -923,6 +923,9 @@ Or relax the generic constraint and return Object.
 
 will add a specific kafka listener object
 
+Unrecognized token 'ConsumerRecord': was expecting (JSON String, Number, Array, Object or token 'null', 'true' or 
+'false')?
+
 Redis
 don't add version, let spring boot bom handle it
 
@@ -936,7 +939,15 @@ use objectMapper(jackson) for POJO to json and back
 
 Cannot resolve method 'readValue(T, Class<UserResponseDTO>)' ??
 UserResponseDTO data = objectMapper.readValue(message, UserResponseDTO.class);
+Solution: Extract the Actual JSON Value from the Kafka Record
+objectMapper.readValue(message.value(), UserResponseDTO.class);
 
 should is use String ?
 
 apply caching at service layer
+
+for 
+
+
+github copilot plugin 
+trashpanda theme dark
