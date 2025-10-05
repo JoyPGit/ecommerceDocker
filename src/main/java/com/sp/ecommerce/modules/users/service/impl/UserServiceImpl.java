@@ -5,6 +5,7 @@ import com.sp.ecommerce.modules.users.dto.response.UserResponseDTO;
 import com.sp.ecommerce.modules.users.entity.UserEntity;
 import com.sp.ecommerce.modules.users.service.UserService;
 import com.sp.ecommerce.modules.users.repository.UserRepository;
+import com.sp.ecommerce.shared.exception.ResourceNotFoundException;
 import com.sp.ecommerce.shared.utils.mapper.UserPOJOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static com.sp.ecommerce.shared.utils.Constants.REDIS_KEY_USER;
+import static com.sp.ecommerce.shared.utils.Constants.*;
 
 @Service
 @Slf4j
@@ -32,7 +33,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDTO findUserByUserId(String userId) {
         Optional<UserEntity> userEntity =
-                this.repository.findByUserId(UUID.fromString(userId));
+                Optional.ofNullable(this.repository.findByUserId(UUID.fromString(userId))
+                        .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND + " for id " + userId)));
         return userPOJOMapper.toResponseDto(userEntity.get());
     }
 

@@ -6,15 +6,14 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.sp.ecommerce.modules.users.dto.request.UserRequestDTO;
 import com.sp.ecommerce.modules.users.dto.response.UserResponseDTO;
 import com.sp.ecommerce.modules.users.service.UserService;
-//import io.swagger.v3.oas.annotations.tags.Tag;
 import com.sp.ecommerce.shared.utils.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.*;
 import jakarta.validation.Valid;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.cache.annotation.*;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import static com.sp.ecommerce.shared.utils.Constants.*;
@@ -41,6 +40,17 @@ public class UserController {
     @Value("${kafka.topics}")
     private String topic;
 
+    @Operation(summary = "Get a user by id")
+    @ApiResponses(
+            value = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",
+                            description = "User found successfully"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404",
+                            description = "User not found"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500",
+                            description = "Internal server error")
+            }
+    )
     // path variable vs request param
     @GetMapping("/id/{userId}")
     public ResponseEntity<?> getUserByUserId(@PathVariable String userId){
@@ -49,6 +59,18 @@ public class UserController {
     }
 
 
+    @Operation(summary = "Create a new user")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200",
+                            description = "User created successfully"),
+                    @ApiResponse(responseCode = "400", description = "Bad Request"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden"),
+                    @ApiResponse(responseCode = "404", description = "Not Found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            }
+    )
     // do we need to send json string?
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody @Valid UserRequestDTO requestDTO) throws JsonProcessingException {
