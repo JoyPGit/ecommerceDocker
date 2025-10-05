@@ -4,6 +4,7 @@ import com.sp.ecommerce.modules.users.entity.UserEntity;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -27,8 +28,9 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
     // why modifying?
     @Modifying
-    @Query(value = "UPDATE commerce.users u " +
-            "SET u.is_deleted = true " +
-            "WHERE u.user_id = :userId", nativeQuery = true)
+    @Transactional
+    @Query(value = "UPDATE commerce.users " +
+            "SET is_deleted = true " +
+            "WHERE user_id = :userId", nativeQuery = true)
     void softDeleteByUserId(@Param("userId") UUID userId);
 }

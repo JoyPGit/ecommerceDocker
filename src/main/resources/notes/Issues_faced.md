@@ -185,6 +185,12 @@ Add the dependency and enable annotation processing
 17. datadog?
 
 
+startup >> 
+start docker engine/desktop
+comment out app in docker compose
+run docker-compose up --build
+run the spring boot app locally
+
 started with docker-compose up --build
 Your app service uses build:
 This tells Docker Compose to build a custom image for the springboot-app from your local project using your Dockerfile.
@@ -951,3 +957,16 @@ for
 
 github copilot plugin 
 trashpanda theme dark
+
+delete user api
+Method threw 'org.springframework.dao.InvalidDataAccessApiUsageException' exception.
+jakarta.persistence.TransactionRequiredException: Executing an update/delete query
+
+Make sure both annotations are present:
+
+@Modifying — tells Spring this is not a SELECT.
+@Transactional — ensures a transaction is opened.
+
+ERROR: column "u" of relation "users" does not exist
+Position: 29
+Postgres doesn't allow aliases in UPDATE statements.
