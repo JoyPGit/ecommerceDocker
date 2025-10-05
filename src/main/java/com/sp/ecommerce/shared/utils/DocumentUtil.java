@@ -7,7 +7,10 @@ public class DocumentUtil {
         return Zstd.compress(data, 3); // level 3 = decent compression
     }
 
-    public static byte[] decompress(byte[] compressed) {
-        return Zstd.decompress(compressed, (int) Zstd.getFrameContentSize(compressed));
+    public static byte[] decompress(byte[] compressedData, long originalSize) {
+        if (originalSize <= 0) {
+            throw new IllegalArgumentException("Original size must be positive");
+        }
+        return Zstd.decompress(compressedData, (int) originalSize);
     }
 }

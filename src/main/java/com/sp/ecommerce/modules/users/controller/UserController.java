@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.sp.ecommerce.modules.users.dto.request.UserRequestDTO;
 import com.sp.ecommerce.modules.users.dto.response.UserResponseDTO;
+import com.sp.ecommerce.modules.users.model.DocumentDetailsResponse;
 import com.sp.ecommerce.modules.users.service.UserService;
 import com.sp.ecommerce.shared.utils.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,7 +14,7 @@ import jakarta.validation.Valid;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.cache.annotation.*;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -105,5 +106,26 @@ public class UserController {
     public ResponseEntity<?> uploadDocument(@Valid @RequestParam("document") MultipartFile file,
                                             @PathVariable String userId) {
         return ResponseEntity.ok().body(userService.uploadDocument(file, userId));
+    }
+
+    @Operation(summary = "download document")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Document uploaded successfully"),
+                    @ApiResponse(responseCode = "400", description = "Bad Request"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            }
+    )
+    @GetMapping("download/{documentId}")
+    public ResponseEntity<?> downloadDocument(@PathVariable String documentId) {
+        DocumentDetailsResponse detailsResponse =
+                userService.downloadDocument(documentId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(detailsResponse.getType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + detailsResponse.getDocumentName() + "\"")
+                .body(detailsResponse.getDocumentData());
     }
 }

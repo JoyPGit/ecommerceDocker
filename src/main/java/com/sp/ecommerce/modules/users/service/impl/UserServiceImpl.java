@@ -3,6 +3,7 @@ package com.sp.ecommerce.modules.users.service.impl;
 import com.sp.ecommerce.modules.users.dto.request.UserRequestDTO;
 import com.sp.ecommerce.modules.users.dto.response.UserResponseDTO;
 import com.sp.ecommerce.modules.users.entity.*;
+import com.sp.ecommerce.modules.users.model.DocumentDetailsResponse;
 import com.sp.ecommerce.modules.users.repository.*;
 import com.sp.ecommerce.modules.users.service.UserService;
 import com.sp.ecommerce.shared.exception.ResourceNotFoundException;
@@ -74,18 +75,34 @@ public class UserServiceImpl implements UserService {
     @Override
     public DocumentEntity uploadDocument(MultipartFile file, String userId){
         try {
+            byte[] original = file.getBytes();
+            byte[] compressed = DocumentUtil.compress(original);
+
             DocumentEntity documentEntity
                     = DocumentEntity.builder()
                     .documentName(file.getOriginalFilename())
                     .userId(UUID.fromString(userId))
                     .type(file.getContentType())
-                    .documentData(DocumentUtil.compress(file.getBytes()))
+                    .documentSizeOriginal((long) original.length)
+                    .documentData(compressed)
                     .build();
             return this.documentRepository.save(documentEntity);
         } catch (IOException exception){
-            log.error("Exception occurred while uploading document for userId {} , error {}",
+            log.error(EXCEPTION_FILE_UPLOAD_MSG + " for userId {} , error {}",
                     userId, exception.getMessage());
             throw new RuntimeException("Failed to upload document");
         }
+    }
+
+    @Override
+    public DocumentDetailsResponse downloadDocument (String documentId) {
+        DocumentEntity documentEntity = this.documentRepository.findByDocumentId(Long.valueOf(documentId))
+                .orElseThrow(() -> new ResourceNotFoundException(DOCUMENT_NOT_FOUND + " for id " + documentId));
+        return DocumentDetailsResponse.builder()
+                .documentName(documentEntity.getDocumentName())
+                .type(documentEntity.getType())
+                .documentData(DocumentUtil.decompress(documentEntity.getDocumentData(),
+                        documentEntity.getDocumentSizeOriginal()))
+                .build();
     }
 }

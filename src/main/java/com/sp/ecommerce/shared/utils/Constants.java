@@ -7,4 +7,7 @@ public class Constants {
     public static final String REDIS_KEY_USER = "ecom:user";
     public static final String USER_NOT_FOUND = "User not found";
     public static final String USER_DELETE_SUCCESS = "User deleted successfully";
+    public static final String EXCEPTION_FILE_UPLOAD_MSG = "Exception occurred while " +
+            "uploading document";
+    public static final String DOCUMENT_NOT_FOUND = "Document not found";
 }

@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> {
     @Query(
-            value = "Select * from commerce.documents d " +
-                    "WHERE d.document_id = :documentId", nativeQuery = true)
+            value = "Select * from commerce.user_documents d " +
+                    "WHERE d.id = :documentId", nativeQuery = true)
     Optional<DocumentEntity> findByDocumentId(Long documentId);
 }

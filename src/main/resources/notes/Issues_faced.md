@@ -207,6 +207,9 @@ Add the dependency and enable annotation processing
 for exception -> use try catch, and throw a Runtime Exception
 check file upload
 
+in script use BYTEA, compress/decompress using zstd
+to return the file after decompressing, change controller method to handle byte array
+
 startup >> 
 start docker engine/desktop
 comment out app in docker compose

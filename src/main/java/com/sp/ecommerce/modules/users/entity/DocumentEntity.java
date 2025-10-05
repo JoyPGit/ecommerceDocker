@@ -48,6 +48,9 @@ public class DocumentEntity {
     @Column(name = "document_data", columnDefinition = "bytea")
     private byte[] documentData;
 
+    @Column(name = " document_size_original")
+    private Long documentSizeOriginal;
+
     @Column(updatable = false)
     @CreationTimestamp
     private Instant createdAt;

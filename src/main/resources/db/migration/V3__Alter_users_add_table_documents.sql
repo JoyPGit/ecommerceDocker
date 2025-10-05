@@ -8,9 +8,10 @@ DROP TABLE IF EXISTS commerce.user_documents;
 CREATE TABLE commerce.user_documents (
     id SERIAL PRIMARY KEY,
     user_id UUID REFERENCES commerce.users(user_id) ON DELETE CASCADE,
-    document_data TEXT NOT NULL,
     document_name VARCHAR(256) NOT NULL,
     type VARCHAR(25) NOT NULL,
+    document_size_original BIGINT NOT NULL DEFAULT 0,
+    document_data BYTEA NOT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
