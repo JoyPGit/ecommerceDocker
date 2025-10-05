@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.cache.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import static com.sp.ecommerce.shared.utils.Constants.*;
 
@@ -87,5 +88,22 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable String userId){
         this.userService.deleteUserById(userId);
         return ResponseEntity.ok().body(USER_DELETE_SUCCESS);
+    }
+
+
+    @Operation(summary = "upload document")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Document uploaded successfully"),
+                    @ApiResponse(responseCode = "400", description = "Bad Request"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            }
+    )
+    @PostMapping("upload/{userId}")
+    public ResponseEntity<?> uploadDocument(@Valid @RequestParam("document") MultipartFile file,
+                                            @PathVariable String userId) {
+        return ResponseEntity.ok().body(userService.uploadDocument(file, userId));
     }
 }
