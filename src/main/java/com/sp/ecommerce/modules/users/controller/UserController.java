@@ -11,6 +11,7 @@ import com.sp.ecommerce.shared.utils.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.*;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.cache.annotation.*;
@@ -74,8 +75,8 @@ public class UserController {
     // path variable vs request param
     @GetMapping("/all")
     public ResponseEntity<?> getAllUsers(
-            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize
+            @RequestParam(name = "page_number", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(name = "page_size", defaultValue = "10", required = false) Integer pageSize
     ){
         return ResponseEntity.ok().body(this.userService.findAllUsers(pageNumber, pageSize));
     }
@@ -147,5 +148,19 @@ public class UserController {
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"" + detailsResponse.getDocumentName() + "\"")
                 .body(detailsResponse.getDocumentData());
+    }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchUsers(
+            @RequestParam(name = "page_number", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(name = "page_size", defaultValue = "10", required = false ) Integer pageSize,
+            @Pattern(message = "search_by matches with name, email, phone",
+                    regexp = "^[a-zA-Z0-9\\s@._-]*$")
+            @RequestParam(name = "search_by", required = false) String searchBy,
+            @RequestParam(name = "type") String type
+    ){
+        return ResponseEntity.ok().body(this.userService.searchUsers(pageNumber,
+                pageSize, searchBy, type));
     }
 }

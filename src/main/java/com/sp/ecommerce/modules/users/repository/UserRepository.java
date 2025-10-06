@@ -9,7 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, UUID> {
+public interface UserRepository extends JpaRepository<UserEntity, UUID>,
+        JpaSpecificationExecutor<UserEntity> {
 
     // TODO : avoid * in query
     @Query(value = "Select * from commerce.users u " +

@@ -1023,3 +1023,26 @@ Also compress before storage and decompress when fetching
 pagination
 
 JPARepository by default extends PagingAndSortingRepository which extends CrudRepository
+When using specification for search, 
+> controller -> service -> Specification -> repository -> extends JpaSpecificationExecutor<UserEntity> <br>  
+> Specification has corresponding methods for all search params 
+> while the Pageable object has page, size, sort params, sort by(col name) and sort type(asc/desc) <br>
+> <br>
+> extract value for enum
+```java
+method () {
+    if (type == null || type.isEmpty()) return cb.conjunction(); // no filter
+    try {
+        UserType userType = UserType.valueOf(type.toUpperCase());
+        return cb.equal(root.get("type"), userType);
+    } catch (IllegalArgumentException e) {
+        // if invalid type string, return false condition
+        return cb.disjunction();
+    }
+}
+```
+
+
+api, controller
+In the @RequestParam annotation in Spring, both name and value attributes serve the same purpose: to specify the name of the request parameter to bind to the method argument. Essentially, value is an alias for name.
+

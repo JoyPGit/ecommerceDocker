@@ -3,7 +3,7 @@ package com.sp.ecommerce.modules.users.service.impl;
 import com.sp.ecommerce.modules.users.dto.request.UserRequestDTO;
 import com.sp.ecommerce.modules.users.dto.response.UserResponseDTO;
 import com.sp.ecommerce.modules.users.entity.*;
-import com.sp.ecommerce.modules.users.model.DocumentDetailsResponse;
+import com.sp.ecommerce.modules.users.model.*;
 import com.sp.ecommerce.modules.users.repository.*;
 import com.sp.ecommerce.modules.users.service.UserService;
 import com.sp.ecommerce.shared.exception.ResourceNotFoundException;
@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.*;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -115,5 +116,26 @@ public class UserServiceImpl implements UserService {
                 .documentData(DocumentUtil.decompress(documentEntity.getDocumentData(),
                         documentEntity.getDocumentSizeOriginal()))
                 .build();
+    }
+
+
+    @Override
+    public List<UserResponseDTO> searchUsers(Integer pageNumber,
+                                      Integer pageSize, String searchBy, String type){
+        Pageable p = PageRequest.of(pageNumber, pageSize);
+        Specification<UserEntity> spec = Specification.where(null);
+
+        if (searchBy != null && !searchBy.isEmpty()) {
+            spec = spec.and(UserSpecification.globalSearch(searchBy));
+        }
+        if (type != null && !type.isEmpty()) {
+            spec = spec.and(UserSpecification.hasType(type));
+        }
+        Page<UserEntity> userEntities = this.repository.findAll(spec, p);
+
+        return userEntities.getContent().stream().map(userEntity ->
+                userPOJOMapper.toResponseDto(userEntity))
+                .collect(Collectors.toList());
+
     }
 }

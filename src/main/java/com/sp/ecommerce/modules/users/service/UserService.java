@@ -22,4 +22,7 @@ public interface UserService {
 
     DocumentDetailsResponse downloadDocument (String documentId);
 
+    List<UserResponseDTO> searchUsers(Integer pageNumber,
+    Integer pageSize, String searchBy, String type);
+
 }
