@@ -10,6 +10,7 @@ import com.sp.ecommerce.shared.exception.ResourceNotFoundException;
 import com.sp.ecommerce.shared.utils.DocumentUtil;
 import com.sp.ecommerce.shared.utils.mapper.UserPOJOMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.query.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.*;
 import org.springframework.data.domain.*;
@@ -121,8 +122,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDTO> searchUsers(Integer pageNumber,
-                                      Integer pageSize, String searchBy, String type){
-        Pageable p = PageRequest.of(pageNumber, pageSize);
+                                      Integer pageSize, String searchBy, String type,
+                                         String sortBy, String sortType) {
+
+        Sort.Direction direction = sortType.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable p = PageRequest.of(pageNumber, pageSize, sort);
         Specification<UserEntity> spec = Specification.where(null);
 
         if (searchBy != null && !searchBy.isEmpty()) {

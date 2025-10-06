@@ -158,9 +158,15 @@ public class UserController {
             @Pattern(message = "search_by matches with name, email, phone",
                     regexp = "^[a-zA-Z0-9\\s@._-]*$")
             @RequestParam(name = "search_by", required = false) String searchBy,
-            @RequestParam(name = "type") String type
+            @RequestParam(name = "type") String type,
+            @Pattern(message = "sort by createdAt",
+                    regexp = "createdAt")
+            @RequestParam(name = "sort_by", required = false) String sortBy,
+            @Pattern(message = "sort type either asc or desc",
+                    regexp = "asc|desc")
+            @RequestParam(name = "sort_type", required = false) String sortType
     ){
         return ResponseEntity.ok().body(this.userService.searchUsers(pageNumber,
-                pageSize, searchBy, type));
+                pageSize, searchBy, type, sortBy, sortType));
     }
 }
